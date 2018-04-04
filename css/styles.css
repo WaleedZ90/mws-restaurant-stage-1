@@ -327,6 +327,12 @@ nav h1 a {
   text-align: center;
 }
 
+#restaurant-container figure {
+  margin: auto;
+  max-width: 900px;
+  margin-top: 20px;
+}
+
 #reviews-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
@@ -369,18 +375,13 @@ nav h1 a {
   border-radius: 5px;
   padding: 5px 15px;
   margin-bottom: 20px;
+  width: 100%;
+  max-width: 900px;
+  table-layout: fixed;
 }
 
 table#restaurant-hours tr td:first-child {
   font-weight: 700;
-}
-
-table#restaurant-hours tr>* {
-  display: block;
-}
-
-table#restaurant-hours tr {
-  display: block;
 }
 
 #restaurant-hours td {
@@ -430,5 +431,11 @@ table#restaurant-hours tr {
 @media screen and (max-width: 420px) {
   #restaurants-list li {
     width: 100%;
+  }
+  table#restaurant-hours tr>* {
+    display: block;
+  }
+  table#restaurant-hours tr {
+    display: block;
   }
 }
