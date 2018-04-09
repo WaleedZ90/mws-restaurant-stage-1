@@ -17,6 +17,7 @@ const FILES_TO_CACHE = [
     '/img/9.jpg',
     '/img/10.jpg',
     '/restaurant.html',
+    '/index.html',
     '/js/restaurant_info.js',
     '/js/dbhelper.js',
     '/js/main.js',
@@ -54,6 +55,16 @@ self.addEventListener('activate', function (event) {
 })
 
 self.addEventListener('fetch', function (event) {
+    const url = new URL(event.request.url);
+    if (url.pathname.startsWith('/restaurant.html')) {
+        event.respondWith(
+            caches.match('restaurant.html')
+            .then(response => {
+                return response || fetch(event.request);
+            })
+        );
+    }
+
     event.respondWith(
         caches.match(event.request).then(function (response) {
             return response || fetch(event.request);

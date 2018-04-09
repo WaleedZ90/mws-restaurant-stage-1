@@ -4,7 +4,7 @@
     "name": "Mission Chinese Food",
     "neighborhood": "Manhattan",
     "photograph": "1.jpg",
-    "imageAlt": "People sitting on a round table in a chinese restaurant",
+    "imageAlt": "Image of Mission Chinese Food Restaurant",
     "address": "171 E Broadway, New York, NY 10002",
     "latlng": {
       "lat": 40.713829,
@@ -44,7 +44,7 @@
     "name": "Emily",
     "neighborhood": "Brooklyn",
     "photograph": "2.jpg",
-    "imageAlt": "A delicious looking pizza",
+    "imageAlt": "Image of Emily Restaurant",
     "address": "919 Fulton St, Brooklyn, NY 11238",
     "latlng": {
       "lat": 40.683555,
@@ -84,7 +84,7 @@
     "name": "Kang Ho Dong Baekjeong",
     "neighborhood": "Manhattan",
     "photograph": "3.jpg",
-    "imageAlt": "A huge restaurant with brown tables and no people sitting in it",
+    "imageAlt": "Image of Manhattan Restaurant",
     "address": "1 E 32nd St, New York, NY 10016",
     "latlng": {
       "lat": 40.747143,
@@ -124,7 +124,7 @@
     "name": "Katz's Delicatessen",
     "neighborhood": "Manhattan",
     "photograph": "4.jpg",
-    "imageAlt": "An image taken outdoor showing the restaurant from the outside",
+    "imageAlt": "Image of Katz's Delicatessen Restaurant",
     "address": "205 E Houston St, New York, NY 10002",
     "latlng": {
       "lat": 40.722216,
@@ -164,7 +164,7 @@
     "name": "Roberta's Pizza",
     "neighborhood": "Brooklyn",
     "photograph": "5.jpg",
-    "imageAlt": "A restaurant crowded with people and an employee working on the cashier",
+    "imageAlt": "Image of Brooklyn Restaurant",
     "address": "261 Moore St, Brooklyn, NY 11206",
     "latlng": {
       "lat": 40.705089,
@@ -204,7 +204,7 @@
     "name": "Hometown BBQ",
     "neighborhood": "Brooklyn",
     "photograph": "6.jpg",
-    "imageAlt": "a large area crowded with so many people eating",
+    "imageAlt": "Image of Hometown BBQ Restaurant",
     "address": "454 Van Brunt St, Brooklyn, NY 11231",
     "latlng": {
       "lat": 40.674925,
@@ -244,7 +244,7 @@
     "name": "Superiority Burger",
     "neighborhood": "Manhattan",
     "photograph": "7.jpg",
-    "imageAlt": "An image taken in black and white",
+    "imageAlt": "Image of Superiority Restaurant",
     "address": "430 E 9th St, New York, NY 10009",
     "latlng": {
       "lat": 40.727397,
@@ -284,7 +284,7 @@
     "name": "The Dutch",
     "neighborhood": "Manhattan",
     "photograph": "8.jpg",
-    "imageAlt": "A picture with a blue sign written the restaurants name on it",
+    "imageAlt": "Image of The Dutch Restaurant",
     "address": "131 Sullivan St, New York, NY 10012",
     "latlng": {
       "lat": 40.726584,
@@ -324,7 +324,7 @@
     "name": "Mu Ramen",
     "neighborhood": "Queens",
     "photograph": "9.jpg",
-    "imageAlt": "asian people eating ramen noodles",
+    "imageAlt": "Image of Mu Ramen Restaurant",
     "address": "1209 Jackson Ave, Queens, NY 11101",
     "latlng": {
       "lat": 40.743797,
@@ -364,7 +364,7 @@
     "name": "Casa Enrique",
     "neighborhood": "Queens",
     "photograph": "10.jpg",
-    "imageAlt": "a modern kitchen with a white stools and a stove",
+    "imageAlt": "Image of Casa Enrique Restaurant",
     "address": "5-48 49th Ave, Queens, NY 11101",
     "latlng": {
       "lat": 40.743394,
