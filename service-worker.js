@@ -21,10 +21,11 @@ const FILES_TO_CACHE = [
     '/js/restaurant_info.js',
     '/js/dbhelper.js',
     '/js/main.js',
-
+    '/js/indexedDb.js',
+    '/node_modules/idb/lib/idb.js'
 ];
 
-const staticCacheName = 'restaurant-static-v2';
+const staticCacheName = 'restaurant-static-v1';
 
 self.addEventListener('install', function (event) {
     event.waitUntil(
