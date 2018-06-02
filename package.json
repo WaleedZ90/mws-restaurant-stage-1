@@ -1,0 +1,23 @@
+{
+  "name": "mws-restaurant-stage-1",
+  "version": "1.0.0",
+  "description": "Three Stage Course Material Project - Restaurant Reviews",
+  "main": "index.html",
+  "dependencies": {
+    "idb": "^2.1.2"
+  },
+  "devDependencies": {
+    "idb": "^2.1.2"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WaleedZ90/mws-restaurant-stage-1.git"
+  },
+  "author": "Waleed Tayseer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WaleedZ90/mws-restaurant-stage-1/issues"
+  },
+  "homepage": "https://github.com/WaleedZ90/mws-restaurant-stage-1#readme"
+}

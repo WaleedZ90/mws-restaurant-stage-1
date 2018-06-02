@@ -5,7 +5,7 @@ const headers = {
 const FILES_TO_CACHE = [
     '/',
     '/css/styles.css',
-    '/data/restaurants.json',
+    '/favicon.ico',
     '/img/1.jpg',
     '/img/2.jpg',
     '/img/3.jpg',
@@ -21,11 +21,11 @@ const FILES_TO_CACHE = [
     '/js/restaurant_info.js',
     '/js/dbhelper.js',
     '/js/main.js',
-    '/js/indexedDb.js',
-    '/node_modules/idb/lib/idb.js'
+    '/node_modules/idb/lib/idb.js',
+    '/manifest.json'
 ];
 
-const staticCacheName = 'restaurant-static-v1';
+const staticCacheName = 'restaurant-static-v2';
 
 self.addEventListener('install', function (event) {
     event.waitUntil(

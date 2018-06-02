@@ -37,8 +37,6 @@ class DBHelper {
     const dbStore = DBHelper.openDatabase();
 
     dbStore.then((db) => {
-      console.log('db opened', db);
-
       fetch(DBHelper.DATABASE_URL).then(response => {
         return response.json();
       }).then(response => {
@@ -54,9 +52,8 @@ class DBHelper {
           store.put(restaurant);
         });
 
-        store.index('by-id').getAll().then((restaurants) => {
-          callback(null, restaurants);
-        })
+        callback(null, response);
+
       }).catch(e => {
         const error = (`Request failed.`);
         const tx = db.transaction('restaurants', 'readwrite');
@@ -72,19 +69,34 @@ class DBHelper {
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
+    const dbStore = DBHelper.openDatabase();
     const restaurantUrl = `${DBHelper.DATABASE_URL}/${id}`;
-    fetch(restaurantUrl).then(response => {
-      return response.json();
-    }).then(restaurant => {
-      if (restaurant.photograph == null) {
-        restaurant.imageAlt = DBHelper.getImageAlt(10);
-      } else {
-        restaurant.imageAlt = DBHelper.getImageAlt(restaurant.photograph);
-      }
-      callback(null, restaurant)
-    }).catch(e => {
-      callback(e, null);
-    });
+
+    dbStore.then((db) => {
+      fetch(restaurantUrl).then(response => {
+        return response.json();
+      }).then(restaurant => {
+        const tx = db.transaction('restaurants', 'readwrite');
+        const store = tx.objectStore('restaurants');
+
+        if (restaurant.photograph == null) {
+          restaurant.imageAlt = DBHelper.getImageAlt(10);
+        } else {
+          restaurant.imageAlt = DBHelper.getImageAlt(restaurant.photograph);
+        }
+
+        store.put(restaurant);
+
+        callback(null, restaurant)
+      }).catch(e => {
+        const error = (`Request failed.`);
+        const tx = db.transaction('restaurants', 'readwrite');
+        const store = tx.objectStore('restaurants');
+        store.get(Number(id)).then((restaurant) => {
+          callback(null, restaurant);
+        })
+      });
+    })
   }
 
   /**
@@ -210,7 +222,6 @@ class DBHelper {
   }
 
   static openDatabase() {
-    console.log('Opening database');
     if (!navigator.serviceWorker) {
       return Promise.resolve();
     }
