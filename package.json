@@ -7,8 +7,12 @@
     "idb": "^2.1.2"
   },
   "devDependencies": {
-    "gulp": "^4.0.0",
-    "gulp-concat": "^2.6.1",
+    "gulp": "latest",
+    "gulp-util": "latest",
+    "gulp-coffee": "latest",
+    "gulp-uglify": "latest",
+    "gulp-concat": "latest",
+    "gulp-connect": "latest",
     "idb": "^2.1.2"
   },
   "scripts": {},
