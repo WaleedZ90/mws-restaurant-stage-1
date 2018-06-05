@@ -4,15 +4,16 @@
   "description": "Three Stage Course Material Project - Restaurant Reviews",
   "main": "index.html",
   "dependencies": {
-    "idb": "^2.1.2"
+    "imagemin-pngquant": "^5.1.0"
   },
   "devDependencies": {
     "gulp": "latest",
-    "gulp-util": "latest",
     "gulp-coffee": "latest",
-    "gulp-uglify": "latest",
     "gulp-concat": "latest",
     "gulp-connect": "latest",
+    "gulp-imagemin": "^4.1.0",
+    "gulp-uglify": "latest",
+    "gulp-util": "latest",
     "idb": "^2.1.2"
   },
   "scripts": {},

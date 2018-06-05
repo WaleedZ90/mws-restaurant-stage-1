@@ -2,6 +2,7 @@ const headers = {
     'content-type': 'text/html'
 };
 
+// TODO: cache all.js instead of all the scripts below
 const FILES_TO_CACHE = [
     '/',
     '/css/styles.css',
