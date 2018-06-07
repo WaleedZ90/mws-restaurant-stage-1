@@ -14,6 +14,7 @@
     "gulp-imagemin": "^4.1.0",
     "gulp-uglify": "latest",
     "gulp-util": "latest",
+    "gulp-webserver": "^0.9.1",
     "idb": "^2.1.2"
   },
   "scripts": {},
