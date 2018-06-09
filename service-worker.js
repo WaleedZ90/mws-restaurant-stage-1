@@ -2,7 +2,6 @@ const headers = {
     'content-type': 'text/html'
 };
 
-// TODO: cache all.js instead of all the scripts below
 const FILES_TO_CACHE = [
     '/',
     '/css/styles.css',
@@ -19,14 +18,16 @@ const FILES_TO_CACHE = [
     '/img/10.jpg',
     '/restaurant.html',
     '/index.html',
-    '/js/restaurant_info.js',
-    '/js/dbhelper.js',
-    '/js/main.js',
-    '/node_modules/idb/lib/idb.js',
+    // '/js/restaurant_info.js',
+    // '/js/dbhelper.js',
+    // '/js/main.js',
+    '/dist/js/bundle.js',
+    // '/node_modules/idb/lib/idb.js',
+    '/dist/js/idb.js',
     '/manifest.json'
 ];
 
-const staticCacheName = 'restaurant-static-v2';
+const staticCacheName = 'restaurant-static-v236';
 
 self.addEventListener('install', function (event) {
     event.waitUntil(

@@ -1,10 +1,10 @@
 let restaurant;
-var map;
+// var map;
 
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {
+window.initRestaurantMap = () => {
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
       console.error(error);
