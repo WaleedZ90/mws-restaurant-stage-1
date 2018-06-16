@@ -18,16 +18,16 @@ const FILES_TO_CACHE = [
     '/img/10.jpg',
     '/restaurant.html',
     '/index.html',
-    // '/js/restaurant_info.js',
-    // '/js/dbhelper.js',
-    // '/js/main.js',
-    '/dist/js/bundle.js',
-    // '/node_modules/idb/lib/idb.js',
-    '/dist/js/idb.js',
+    '/js/restaurant_info.js',
+    '/js/dbhelper.js',
+    '/js/main.js',
+    // '/js/bundle.js',
+    '/node_modules/idb/lib/idb.js',
+    // '/dist/js/idb.js',
     '/manifest.json'
 ];
 
-const staticCacheName = 'restaurant-static-v236';
+const staticCacheName = 'restaurant-static-v240';
 
 self.addEventListener('install', function (event) {
     event.waitUntil(
