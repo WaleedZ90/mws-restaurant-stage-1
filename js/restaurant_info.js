@@ -146,7 +146,10 @@ createReviewHTML = (review) => {
     </svg>
   `;
   deleteReviewButton.addEventListener('click', (e) => {
-    alert(review.id);
+    DBHelper.deleteRestaurantReview(review.id, review.restaurant_id, (error, success) => {
+      if(success)
+        li.remove();
+    })
   })
 
   li.appendChild(deleteReviewButton);

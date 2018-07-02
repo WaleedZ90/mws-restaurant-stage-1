@@ -104,7 +104,7 @@ class DBHelper {
     const reviewsUrl = `${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`;
     dbStore.then((db) => {
       fetch(reviewsUrl).then(response => {
-        if ( response.status == 404)
+        if (response.status == 404)
           return null;
 
         return response.json();
@@ -113,18 +113,31 @@ class DBHelper {
         const store = tx.objectStore('restaurants');
         store.get(Number(id)).then(restaurant => {
           restaurant.reviews = reviews;
+          store.put(restaurant);
           callback(null, reviews);
         })
       })
     });
   }
 
-  static deleteRestaurantReview(reviewId, callback) {
+  static deleteRestaurantReview(reviewId, restaurantId, callback) {
     const dbStore = DBHelper.openDatabase();
-    const reviewsUrl = `${DBHelper.DATABASE_URL}/reviews/${id}`;
+    const reviewsUrl = `${DBHelper.DATABASE_URL}/reviews/${reviewId}`;
 
     dbStore.then((db) => {
-      // TODO: implement restaurant deletion
+      fetch(reviewsUrl, {
+        method: 'DELETE'
+      }).then(response => {
+        const tx = db.transaction('restaurants', 'readwrite');
+        const store = tx.objectStore('restaurants');
+        store.get(Number(restaurantId)).then(restaurant => {
+          restaurant.reviews = restaurant.reviews.filter((review, index) => {
+            return review.id != reviewId;
+          });
+          store.put(restaurant);
+        });
+        callback(null, response);
+      }).catch((e) => callback(e, null));
     });
   }
 
