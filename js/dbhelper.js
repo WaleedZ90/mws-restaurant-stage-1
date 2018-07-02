@@ -8,7 +8,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337 // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}`;
   }
 
   /**
@@ -37,7 +37,7 @@ class DBHelper {
     const dbStore = DBHelper.openDatabase();
 
     dbStore.then((db) => {
-      fetch(DBHelper.DATABASE_URL).then(response => {
+      fetch(`${DBHelper.DATABASE_URL}/restaurants`).then(response => {
         return response.json();
       }).then(response => {
         const tx = db.transaction('restaurants', 'readwrite');
@@ -70,7 +70,7 @@ class DBHelper {
    */
   static fetchRestaurantById(id, callback) {
     const dbStore = DBHelper.openDatabase();
-    const restaurantUrl = `${DBHelper.DATABASE_URL}/${id}`;
+    const restaurantUrl = `${DBHelper.DATABASE_URL}/restaurants/${id}`;
 
     dbStore.then((db) => {
       fetch(restaurantUrl).then(response => {
@@ -86,8 +86,8 @@ class DBHelper {
         }
 
         store.put(restaurant);
+        callback(null, restaurant);
 
-        callback(null, restaurant)
       }).catch(e => {
         const error = (`Request failed.`);
         const tx = db.transaction('restaurants', 'readwrite');
@@ -97,6 +97,35 @@ class DBHelper {
         })
       });
     })
+  }
+
+  static fetchRestaurantReviews(id, callback) {
+    const dbStore = DBHelper.openDatabase();
+    const reviewsUrl = `${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`;
+    dbStore.then((db) => {
+      fetch(reviewsUrl).then(response => {
+        if ( response.status == 404)
+          return null;
+
+        return response.json();
+      }).then(reviews => {
+        const tx = db.transaction('restaurants', 'readwrite');
+        const store = tx.objectStore('restaurants');
+        store.get(Number(id)).then(restaurant => {
+          restaurant.reviews = reviews;
+          callback(null, reviews);
+        })
+      })
+    });
+  }
+
+  static deleteRestaurantReview(reviewId, callback) {
+    const dbStore = DBHelper.openDatabase();
+    const reviewsUrl = `${DBHelper.DATABASE_URL}/reviews/${id}`;
+
+    dbStore.then((db) => {
+      // TODO: implement restaurant deletion
+    });
   }
 
   /**
