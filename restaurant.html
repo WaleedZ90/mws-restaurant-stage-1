@@ -55,6 +55,24 @@
     <!-- Beginning reviews -->
     <section id="reviews-container">
       <ul id="reviews-list"></ul>
+      <section class="review-form">
+          <form name="reviewForm" onsubmit="submitReview(event);" method="POST">
+            <h3>Add a review</h3>
+            <fieldset class="form-body">
+
+              <label for="name">Name</label>
+              <input type="text" name="name">
+    
+              <label for="rating">Rating</label>
+              <input type="number" name="rating" min="1" max="10">
+    
+              <label for="comments">Your comment</label>
+              <textarea name="comments" rows="5"></textarea>
+
+              <input type="submit" value="Submit" />
+            </fieldset>
+          </form>
+      </section>
     </section>
     <!-- End reviews -->
   </main>

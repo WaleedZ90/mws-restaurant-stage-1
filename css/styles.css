@@ -347,6 +347,43 @@ nav h1 a {
   padding-bottom: 1pt;
 }
 
+.review-form {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.form-body {
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.form-body label {
+  font-weight: bold;
+}
+
+.form-body input,
+.form-body textarea,
+.form-body button {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  resize: none;
+}
+
+.form-body input[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 #reviews-list {
   padding: 0;
 }
@@ -360,12 +397,20 @@ nav h1 a {
   overflow: hidden;
   padding: 10px;
   position: relative;
-  width: 100%;
   border-radius: 13px;
 }
 
 #reviews-list li p {
   margin: 0 0 10px;
+}
+
+#reviews-list li button {
+  top: 10px;
+  position: absolute;
+  right: 10px;
+  border: none;
+  background-color: inherit;
+  cursor: pointer;
 }
 
 #restaurant-hours {

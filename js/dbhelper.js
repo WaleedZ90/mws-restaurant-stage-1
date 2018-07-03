@@ -120,6 +120,35 @@ class DBHelper {
     });
   }
 
+  static addReview(reviewData, callback) {
+    const dbStore = DBHelper.openDatabase();
+    const reviewUrl = `${DBHelper.DATABASE_URL}/reviews`;
+
+    dbStore.then((db) => {
+      fetch(reviewUrl, {
+        method:'POST',
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+        body: JSON.stringify(reviewData)
+      }).then(response => {
+        return response.json();
+      }).then((newReview) => {
+        // TODO: caching implementation goes here
+        const tx = db.transaction('restaurants', 'readwrite');
+        const store = tx.objectStore('restaurants');
+        store.get(Number(reviewData.restaurant_id)).then(restaurant => {
+          restaurant.reviews.push(newReview);
+          store.put(restaurant);
+          callback(null, restaurant.reviews);
+        })
+      }).catch((e) => {
+        console.error('addReview', e);
+        callback(e, null)
+      })
+    });
+  }
+
   static deleteRestaurantReview(reviewId, restaurantId, callback) {
     const dbStore = DBHelper.openDatabase();
     const reviewsUrl = `${DBHelper.DATABASE_URL}/reviews/${reviewId}`;
