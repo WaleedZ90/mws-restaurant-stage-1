@@ -178,6 +178,37 @@ class DBHelper {
     });
   }
 
+  static editReview(reviewData, callback) {
+    const dbStore = DBHelper.openDatabase();
+    const reviewUrl = `${DBHelper.DATABASE_URL}/reviews/${reviewData.id}`;
+
+    dbStore.then((db) => {
+      fetch(reviewUrl, {
+        method: 'PUT',
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+        body: JSON.stringify(reviewData)
+      }).then(response => {
+        return response.json();
+      }).then(modifiedReview => {
+        const tx = db.transaction('restaurants', 'readwrite');
+        const store = tx.objectStore('restaurants');
+        store.get(Number(reviewData.restaurant_id)).then(restaurant => {
+          const restaurantReview = restaurant.reviews.filter((r) => r.id == modifiedReview.id)[0];
+          restaurantReview.name = modifiedReview.name;
+          restaurantReview.rating = modifiedReview.rating;
+          restaurantReview.comments = modifiedReview.comments;
+          store.put(restaurant);
+          callback(null, modifiedReview);
+        })
+      }).catch(e => {
+        // TODO: offline updating goes here
+        callback(e, null);
+      })
+    });
+  }
+
   static deleteRestaurantReview(reviewId, restaurantId, callback) {
     const dbStore = DBHelper.openDatabase();
     const reviewsUrl = `${DBHelper.DATABASE_URL}/reviews/${reviewId}`;
