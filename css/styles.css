@@ -226,6 +226,16 @@ nav h1 a {
   text-align: center;
 }
 
+.restaurant-text h2 {
+  margin-bottom: 0;
+}
+
+.restaurant-text button {
+  border: none;
+  background-color: inherit;
+  cursor: pointer;
+}
+
 #restaurants-list li h1 {
   color: #f18200;
   font-family: Arial, sans-serif;
@@ -374,6 +384,22 @@ nav h1 a {
   resize: none;
 }
 
+.form-control {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  resize: none;
+}
+
+button.form-control {
+  background-color: dodgerblue !important;
+  color: white;
+}
+
 .form-body input[type="submit"] {
   background-color: #4CAF50;
   color: white;
@@ -405,12 +431,23 @@ nav h1 a {
 }
 
 #reviews-list li button {
-  top: 10px;
-  position: absolute;
-  right: 10px;
   border: none;
   background-color: inherit;
   cursor: pointer;
+}
+
+.delete-review-button {
+  top: 10px;
+  position: absolute;
+  right: 10px;
+  color: red;
+}
+
+.edit-review-button {
+  position: absolute;
+  right: 10px;
+  top: 30px;
+  color: dodgerblue;
 }
 
 #restaurant-hours {

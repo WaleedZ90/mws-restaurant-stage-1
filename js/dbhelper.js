@@ -120,13 +120,42 @@ class DBHelper {
     });
   }
 
+  static favoriteARestaurant(restaurant, callback) {
+    const dbStore = DBHelper.openDatabase();
+    const favoriteUrl = `${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}/?is_favorite=${!JSON.parse(restaurant.is_favorite)}`;
+
+    dbStore.then((db) => {
+      fetch(favoriteUrl, {
+        method: 'PUT',
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        }
+      }).then(response => {
+        return response.json();
+      }).then(modifiedRestaurant => {
+        const tx = db.transaction('restaurants', 'readwrite');
+        const store = tx.objectStore('restaurants');
+        store.get(Number(restaurant.id)).then(idxRestaurant => {
+          modifiedRestaurant.is_favorite = JSON.parse(modifiedRestaurant.is_favorite);
+          idxRestaurant.is_favorite = modifiedRestaurant.is_favorite;
+          store.put(idxRestaurant);
+          callback(null, modifiedRestaurant);
+        })
+      }).catch(e => {
+        // TODO: offline caching
+        console.error('favoriteARestaurant', e);
+        callback(e, null);
+      })
+    });
+  }
+
   static addReview(reviewData, callback) {
     const dbStore = DBHelper.openDatabase();
     const reviewUrl = `${DBHelper.DATABASE_URL}/reviews`;
 
     dbStore.then((db) => {
       fetch(reviewUrl, {
-        method:'POST',
+        method: 'POST',
         headers: {
           "Content-Type": "application/json; charset=utf-8",
         },
