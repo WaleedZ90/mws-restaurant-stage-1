@@ -20,6 +20,12 @@ window.initRestaurantMap = () => {
   });
 }
 
+document.addEventListener('DOMContentLoaded', (event) => {
+  DBHelper.cleanupDeletedReviews();
+  DBHelper.cleanupAddReviews();
+  DBHelper.cleanupEditedReviews();
+});
+
 /**
  * Post: Add a new review
  */
@@ -134,9 +140,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
-  const title = document.createElement('h3');
-  title.innerHTML = 'Reviews';
-  container.appendChild(title);
+  container.querySelectorAll('.review-item').forEach(el => el.remove());
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -156,13 +160,10 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
  */
 createReviewHTML = (review) => {
   const li = document.createElement('li');
+  li.className = 'review-item';
   const name = document.createElement('p');
   name.innerHTML = review.name;
   li.appendChild(name);
-
-  // const date = document.createElement('p');
-  // date.innerHTML = new Date(review.updatedAt).toDateString();
-  // li.appendChild(date);
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
@@ -253,17 +254,14 @@ createReviewHTML = (review) => {
         DBHelper.editReview(newReview, (error, success) => {
           if (success) {
             const formControls = document.querySelectorAll('.form-control');
-            // formControls[0].parentElement.childNodes.forEach(el => {
-            //   if (el.nodeName == 'P')
-            //     el.setAttribute('style', 'display:block;');
-            // })
+
             const readOnlyControls = formControls[0].parentElement.childNodes;
             readOnlyControls[0].innerText = success.name;
             readOnlyControls[0].setAttribute('style', 'display:block;');
-            
+
             readOnlyControls[1].innerText = success.rating;
             readOnlyControls[1].setAttribute('style', 'display:block;');
-            
+
             readOnlyControls[2].innerText = success.comments;
             readOnlyControls[2].setAttribute('style', 'display:block;');
 

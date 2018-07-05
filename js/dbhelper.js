@@ -40,8 +40,7 @@ class DBHelper {
       fetch(`${DBHelper.DATABASE_URL}/restaurants`).then(response => {
         return response.json();
       }).then(response => {
-        const tx = db.transaction('restaurants', 'readwrite');
-        const store = tx.objectStore('restaurants');
+
 
         response.map((restaurant, index) => {
           if (restaurant.photograph == null) {
@@ -49,7 +48,15 @@ class DBHelper {
           } else {
             restaurant.imageAlt = DBHelper.getImageAlt(restaurant.photograph);
           }
-          store.put(restaurant);
+
+          db.transaction('restaurants', 'readwrite').objectStore('restaurants').get(restaurant.id).then(idbRestaurant => {
+            if (idbRestaurant && idbRestaurant.reviews)
+              restaurant.reviews = idbRestaurant.reviews;
+
+            const tx = db.transaction('restaurants', 'readwrite');
+            const store = tx.objectStore('restaurants');
+            store.put(restaurant);
+          })
         });
 
         callback(null, response);
@@ -116,13 +123,24 @@ class DBHelper {
           store.put(restaurant);
           callback(null, reviews);
         })
+      }).catch(e => {
+        const tx = db.transaction('restaurants', 'readwrite');
+        const store = tx.objectStore('restaurants');
+        store.get(Number(id)).then(restaurant => {
+          callback(null, restaurant.reviews);
+        })
       })
     });
   }
 
   static favoriteARestaurant(restaurant, callback) {
+    // Sometimes restaurants coming from the api don't have is_favorite flag, so we run this check in order not to cause any exceptions
+    if (restaurant.is_favorite == null)
+      restaurant.is_favorite = false;
+
     const dbStore = DBHelper.openDatabase();
-    const favoriteUrl = `${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}/?is_favorite=${!JSON.parse(restaurant.is_favorite)}`;
+    const newFavorite = !JSON.parse(restaurant.is_favorite);
+    const favoriteUrl = `${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}/?is_favorite=${newFavorite}`;
 
     dbStore.then((db) => {
       fetch(favoriteUrl, {
@@ -140,13 +158,46 @@ class DBHelper {
           idxRestaurant.is_favorite = modifiedRestaurant.is_favorite;
           store.put(idxRestaurant);
           callback(null, modifiedRestaurant);
-        })
+        });
       }).catch(e => {
-        // TODO: offline caching
         console.error('favoriteARestaurant', e);
-        callback(e, null);
+        const favoriteStoreTx = db.transaction('favorites', 'readwrite').objectStore('favorites');
+        const updatedFavorite = restaurant;
+        updatedFavorite.is_favorite = newFavorite;
+        favoriteStoreTx.put(updatedFavorite);
+
+        const tx = db.transaction('restaurants', 'readwrite');
+        const store = tx.objectStore('restaurants');
+        store.get(Number(restaurant.id)).then(idxRestaurant => {
+          idxRestaurant.is_favorite = newFavorite;
+          store.put(idxRestaurant);
+          callback(null, idxRestaurant);
+        });
       })
     });
+  }
+
+  static cleanFavoriteStore() {
+    const dbStore = DBHelper.openDatabase();
+    dbStore.then((db) => {
+      db.transaction('favorites', 'readwrite').objectStore('favorites').getAll().then((favorites) => {
+        favorites.forEach(favorite => {
+          const favoriteUrl = `${DBHelper.DATABASE_URL}/restaurants/${favorite.id}/?is_favorite=${favorite.is_favorite}`;
+          fetch(favoriteUrl, {
+            method: 'PUT',
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+            }
+          }).then(response => {
+            return response.json();
+          }).then(modifiedRestaurant => {
+            const store = db.transaction('favorites', 'readwrite').objectStore('favorites');
+            store.delete(modifiedRestaurant.id);
+            return store.complete;
+          })
+        });
+      });
+    }).catch(e => console.error('cleanFavoriteStore', e));
   }
 
   static addReview(reviewData, callback) {
@@ -173,10 +224,45 @@ class DBHelper {
         })
       }).catch((e) => {
         console.error('addReview', e);
-        callback(e, null)
+
+        const addedReviewsStore = db.transaction('addedReviews', 'readwrite').objectStore('addedReviews');
+        addedReviewsStore.add(reviewData);
+
+        const tx = db.transaction('restaurants', 'readwrite');
+        const store = tx.objectStore('restaurants');
+        store.get(Number(reviewData.restaurant_id)).then(restaurant => {
+          restaurant.reviews.push(reviewData);
+          store.put(restaurant);
+          callback(null, restaurant.reviews);
+        })
       })
     });
   }
+
+  static cleanupAddReviews() {
+    const dbStore = DBHelper.openDatabase();
+    dbStore.then((db) => {
+      db.transaction('addedReviews', 'readwrite').objectStore('addedReviews').getAll().then(reviews => {
+        const reviewUrl = `${DBHelper.DATABASE_URL}/reviews`;
+        fetch(reviewUrl, {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+            },
+            body: JSON.stringify(reviews)
+          }).then(response => response.json())
+          .then(addedReviews => {
+            reviews.forEach(addedReview => {
+              const store = db.transaction('addedReviews', 'readwrite').objectStore('addedReviews');
+              store.delete(addedReview.id);
+              return store.complete;
+            })
+          })
+
+      })
+    });
+  }
+
 
   static editReview(reviewData, callback) {
     const dbStore = DBHelper.openDatabase();
@@ -204,8 +290,43 @@ class DBHelper {
         })
       }).catch(e => {
         // TODO: offline updating goes here
-        callback(e, null);
+        const modifiedReviewStore = db.transaction('modifiedReviews', 'readwrite').objectStore('modifiedReviews');
+        modifiedReviewStore.put(reviewData);
+
+        const tx = db.transaction('restaurants', 'readwrite');
+        const store = tx.objectStore('restaurants');
+        store.get(Number(reviewData.restaurant_id)).then(restaurant => {
+          const restaurantReview = restaurant.reviews.filter((r) => r.id == reviewData.id)[0];
+          restaurantReview.name = reviewData.name;
+          restaurantReview.rating = reviewData.rating;
+          restaurantReview.comments = reviewData.comments;
+          store.put(restaurant);
+          callback(null, restaurantReview);
+        })
       })
+    });
+  }
+
+  static cleanupEditedReviews() {
+    const dbStore = DBHelper.openDatabase();
+    dbStore.then((db) => {
+      db.transaction('modifiedReviews', 'readwrite').objectStore('modifiedReviews').getAll().then(reviews => {
+        reviews.forEach(review => {
+          const reviewUrl = `${DBHelper.DATABASE_URL}/reviews/${review.id}`;
+          fetch(reviewUrl, {
+              method: 'PUT',
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+              },
+              body: JSON.stringify(review)
+            }).then(response => response.json())
+            .then(modifiedReview => {
+              const store = db.transaction('modifiedReviews', 'readwrite').objectStore('modifiedReviews');
+              store.delete(modifiedReview.id);
+              return store.complete;
+            })
+        });
+      }).catch(e => console.error('cleanupEditedReviews', e));
     });
   }
 
@@ -224,10 +345,45 @@ class DBHelper {
             return review.id != reviewId;
           });
           store.put(restaurant);
+          callback(null, response);
         });
-        callback(null, response);
-      }).catch((e) => callback(e, null));
+      }).catch((e) => {
+        const deletedReviewsStore = db.transaction('deletedReviews', 'readwrite').objectStore('deletedReviews');
+        deletedReviewsStore.put({
+          id: reviewId
+        });
+
+        const tx = db.transaction('restaurants', 'readwrite');
+        const store = tx.objectStore('restaurants');
+        store.get(Number(restaurantId)).then(restaurant => {
+          restaurant.reviews = restaurant.reviews.filter((review, index) => {
+            return review.id != reviewId;
+          });
+          store.put(restaurant);
+          callback(null, restaurant);
+        });
+      });
     });
+  }
+
+  static cleanupDeletedReviews() {
+    const dbStore = DBHelper.openDatabase();
+    dbStore.then((db) => {
+      db.transaction('deletedReviews', 'readwrite').objectStore('deletedReviews').getAll().then(reviewsIds => {
+        reviewsIds.forEach(reviewId => {
+          const reviewsUrl = `${DBHelper.DATABASE_URL}/reviews/${reviewId.id}`;
+          fetch(reviewsUrl, {
+            method: 'DELETE'
+          }).then(response => {
+            if (response.status != 404) {
+              const store = db.transaction('deletedReviews', 'readwrite').objectStore('deletedReviews');
+              store.delete(reviewId.id);
+              return store.complete;
+            }
+          })
+        })
+      })
+    }).catch(e => console.error('cleanupDeletedReviews', e));
   }
 
   /**
@@ -358,11 +514,43 @@ class DBHelper {
     }
 
     return idb.open('restaurantsDb', 1, (upgradeDb) => {
-      var store = upgradeDb.createObjectStore('restaurants', {
-        keyPath: 'id'
-      });
-      store.createIndex('by-id', 'id');
-    })
-  }
+      if (!upgradeDb.objectStoreNames.contains('restaurants')) {
+        var store = upgradeDb.createObjectStore('restaurants', {
+          keyPath: 'id'
+        });
+        store.createIndex('by-id', 'id');
+      }
 
+      if (!upgradeDb.objectStoreNames.contains('favorites')) {
+        // save offline favorited restaurants to update them when server is online.
+        var offlineFavoriteStore = upgradeDb.createObjectStore('favorites', {
+          keyPath: 'id'
+        });
+        offlineFavoriteStore.createIndex('by-id', 'id');
+      }
+
+      if (!upgradeDb.objectStoreNames.contains('deletedReviews')) {
+        // store to save the reviews to be deleted when the server is online.
+        var offlineDeletedReviews = upgradeDb.createObjectStore('deletedReviews', {
+          keyPath: 'id'
+        });
+        offlineDeletedReviews.createIndex('by-id', 'id');
+      }
+
+      if (!upgradeDb.objectStoreNames.contains('modifiedReviews')) {
+        var offlineModifiedReviews = upgradeDb.createObjectStore('modifiedReviews', {
+          keyPath: 'id'
+        });
+        offlineModifiedReviews.createIndex('by-id', 'id');
+      }
+
+      if (!upgradeDb.objectStoreNames.contains('addedReviews')) {
+        var offlineAddedReviews = upgradeDb.createObjectStore('addedReviews', {
+          keyPath: 'id',
+          autoIncrement: true
+        });
+        offlineAddedReviews.createIndex('by-id', 'id');
+      }
+    });
+  }
 }

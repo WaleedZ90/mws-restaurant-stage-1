@@ -8,6 +8,7 @@ var markers = []
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
+  DBHelper.cleanFavoriteStore();
   fetchNeighborhoods();
   fetchCuisines();
 });
@@ -156,6 +157,8 @@ createRestaurantHTML = (restaurant) => {
 
   const favoriteButton = document.createElement('button');
   favoriteButton.id = restaurant.id;
+  favoriteButton.setAttribute('aria-label', `button to favorite ${restaurant.name}`);
+  favoriteButton.setAttribute('aria-labelledby', restaurant.id);
   
   if (restaurant.is_favorite != null && typeof(restaurant.is_favorite) == 'string') {
     restaurant.is_favorite = JSON.parse(restaurant.is_favorite);
