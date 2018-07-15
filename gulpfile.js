@@ -27,9 +27,18 @@ gulp.task('html-watch', (done) => {
 });
 
 gulp.task('js-watch', (done) => {
-    var scriptSources = ['js/restaurant_info.js', 'js/main.js', 'js/dbhelper.js'];
-    gulp.src(scriptSources)
-        .pipe(concat('bundle.js'))
+    // bundling index page
+    gulp.src(['js/dbhelper.js', 'js/main.js'])
+        .pipe(concat('indexBundle.js'))
+        .pipe(gulp.dest('dist/js'));
+
+    // bundling details page
+    gulp.src(['js/dbhelper.js', 'js/restaurant_info.js'])
+        .pipe(concat('detailsBundle.js'))
+        .pipe(gulp.dest('dist/js'));
+
+    //bundling node_modules
+    gulp.src('./node_modules/idb/lib/idb.js')
         .pipe(gulp.dest('dist/js'))
         .pipe(connect.reload());
     done();
@@ -64,10 +73,17 @@ gulp.task('html', function (done) {
 
 
 gulp.task('js', function (done) {
-    var scriptSources = ['js/restaurant_info.js', 'js/main.js', 'js/dbhelper.js'];
-    gulp.src(scriptSources)
-        .pipe(concat('bundle.js'))
+    // bundling index page
+    gulp.src(['js/dbhelper.js', 'js/main.js'])
+        .pipe(concat('indexBundle.js'))
         .pipe(gulp.dest('dist/js'));
+
+    // bundling details page
+    gulp.src(['js/dbhelper.js', 'js/restaurant_info.js'])
+        .pipe(concat('detailsBundle.js'))
+        .pipe(gulp.dest('dist/js'));
+
+    //bundling node_modules
     gulp.src('./node_modules/idb/lib/idb.js')
         .pipe(gulp.dest('dist/js'));
     done();
