@@ -1,9 +1,11 @@
 var gulp = require('gulp');
+var babel = require('gulp-babel');
 var connect = require('gulp-connect');
 var concat = require('gulp-concat');
 var imagemin = require('gulp-imagemin');
 var pngquant = require('imagemin-pngquant');
 var webserver = require('gulp-webserver');
+var uglify = require('gulp-uglify');
 
 gulp.task('copy', ['html', 'js', 'css', 'service-workers', 'images']);
 
@@ -59,8 +61,19 @@ gulp.task('service-workers-watch', (done) => {
     done();
 });
 
+gulp.task('images-watch', (done) => {
+    gulp.src('./img/**')
+        .pipe(imagemin({
+            progressive: true,
+            use: [pngquant()]
+        }))
+        .pipe(gulp.dest('dist/img'))
+        .pipe(connect.reload());
+    done();
+});
+
 gulp.task('watch', function () {
-    gulp.watch(['./*.html', 'js/**/*.js', './service-worker-register.js', './service-worker.js', 'css/*.css'], ['html-watch', 'js-watch', 'css-watch', 'service-workers-watch']);
+    gulp.watch(['./*.html', 'js/**/*.js', './service-worker-register.js', './service-worker.js', 'css/*.css', 'img'], ['html-watch', 'js-watch', 'css-watch', 'service-workers-watch', 'images-watch']);
 });
 
 // --------------------------- End Watch ------------------------------
@@ -75,6 +88,8 @@ gulp.task('html', function (done) {
 gulp.task('js', function (done) {
     // bundling index page
     gulp.src(['js/dbhelper.js', 'js/main.js'])
+        .pipe(babel())
+        // .pipe(uglify())
         .pipe(concat('indexBundle.js'))
         .pipe(gulp.dest('dist/js'));
 

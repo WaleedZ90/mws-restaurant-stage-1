@@ -3,11 +3,21 @@
   "version": "1.0.0",
   "description": "Three Stage Course Material Project - Restaurant Reviews",
   "main": "index.html",
+  "babel": {
+    "presets": [
+      "./node_modules/babel-preset-env"
+    ]
+  },
   "dependencies": {
-    "imagemin-pngquant": "^5.1.0"
+    "imagemin-pngquant": "^5.1.0",
+    "pump": "^3.0.0"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "gulp": "latest",
+    "gulp-babel": "^7.0.1",
     "gulp-coffee": "latest",
     "gulp-concat": "latest",
     "gulp-connect": "latest",
