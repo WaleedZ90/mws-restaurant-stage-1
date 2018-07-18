@@ -4,10 +4,11 @@ var connect = require('gulp-connect');
 var concat = require('gulp-concat');
 var imagemin = require('gulp-imagemin');
 var pngquant = require('imagemin-pngquant');
-var webserver = require('gulp-webserver');
 var uglify = require('gulp-uglify');
+var clean = require('gulp-clean');
 
-gulp.task('copy', ['html', 'js', 'css', 'service-workers', 'images']);
+
+gulp.task('copy', ['clean', 'html', 'js-transpile', 'js', 'css', 'service-workers', 'images']);
 
 gulp.task('default', ['webserver', 'watch']);
 
@@ -77,6 +78,15 @@ gulp.task('watch', function () {
 });
 
 // --------------------------- End Watch ------------------------------
+gulp.task('clean', function (done) {
+    gulp.src('dist', {
+            read: false
+        })
+        .pipe(clean({
+            force: true
+        }));
+    done();
+});
 
 gulp.task('html', function (done) {
     gulp.src('./*.html')
@@ -84,23 +94,39 @@ gulp.task('html', function (done) {
     done();
 });
 
+gulp.task('js-transpile', function (done) {
+    gulp.src('js/dbhelper.js')
+        .pipe(babel())
+        .pipe(gulp.dest('./js/transpiled'));
+    done();
+});
 
 gulp.task('js', function (done) {
     // bundling index page
-    gulp.src(['js/dbhelper.js', 'js/main.js'])
-        .pipe(babel())
+    gulp.src(['js/transpiled/dbhelper.js', 'js/main.js'])
+        // .pipe(babel())
         // .pipe(uglify())
         .pipe(concat('indexBundle.js'))
         .pipe(gulp.dest('dist/js'));
 
     // bundling details page
-    gulp.src(['js/dbhelper.js', 'js/restaurant_info.js'])
+    gulp.src(['js/transpiled/dbhelper.js', 'js/restaurant_info.js'])
+        // .pipe(babel())
+        // .pipe(uglify())
         .pipe(concat('detailsBundle.js'))
         .pipe(gulp.dest('dist/js'));
 
     //bundling node_modules
     gulp.src('./node_modules/idb/lib/idb.js')
         .pipe(gulp.dest('dist/js'));
+
+    gulp.src('js/transpiled', {
+            read: false
+        })
+        .pipe(clean({
+            force: true
+        }));
+
     done();
 })
 
