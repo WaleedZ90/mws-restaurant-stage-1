@@ -25,10 +25,11 @@ const FILES_TO_CACHE = [
     // '.dist/js/indexBundle.js',
     // '.dist/js/detailsBundle.js',
     '/node_modules/idb/lib/idb.js',
+    '/node_modules/lazyload/lazyload.js',
     '/manifest.json'
 ];
 
-const staticCacheName = 'restaurant-static-v247';
+const staticCacheName = 'restaurant-static-v249';
 
 self.addEventListener('install', function (event) {
     event.waitUntil(

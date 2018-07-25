@@ -4,6 +4,8 @@ let restaurants,
 var map
 var markers = []
 
+
+lazyload();
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
@@ -142,8 +144,7 @@ createRestaurantHTML = (restaurant) => {
   const figure = document.createElement('figure');
 
   const image = document.createElement('img');
-  observer.observe(image);
-  image.className = 'restaurant-img lazy-image';
+  image.className = 'restaurant-img lazyload';
   image.alt = restaurant.imageAlt;
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
   figure.append(image);
@@ -228,43 +229,3 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 }
-
-// intersection observer
-debugger;
-const images = document.querySelectorAll('.lazy-image');
-const config = {
-  // If the image gets within 50px in the Y axis, start the download.
-  rootMargin: '50px 0px',
-  threshold: 0.01
-};
-
-let observer;
-// Replace the data-src attribute with the value of the data-src attribute
-let preloadImage = (element) => {
-  debugger;
-  if (element.dataset && element.dataset.src) {
-    element.src = element.dataset.src;
-  }
-  if (element.dataset && element.dataset.srcset) {
-    element.srcset = element.dataset.srcset
-  }
-};
-let onIntersection = (entries) => {
-  entries.forEach(entry => {
-    debugger;
-    if (entry.intersectionRatio > 0) {
-      // Stop watching and load the image
-      observer.unobserve(entry.target);
-      // call our method: preloadImage
-      preloadImage(entry.target);
-    }
-  })
-};
-
-if (!('IntersectionObserver' in window)) {
-  Array.from(images).forEach(image => preloadImage(image));
-} else {
-  // It is supported, load the images by calling our method: onIntersection
-  observer = new IntersectionObserver(onIntersection, config);
-}
-// intersection observer

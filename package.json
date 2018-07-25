@@ -9,7 +9,9 @@
     ]
   },
   "dependencies": {
+    "@power-elements/lazy-image": "^1.2.3",
     "imagemin-pngquant": "^5.1.0",
+    "lazyload": "^2.0.0-beta.2",
     "pump": "^3.0.0"
   },
   "devDependencies": {
