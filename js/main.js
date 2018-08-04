@@ -89,7 +89,7 @@ window.initIndexMap = () => {
 /**
  * Update page and map for current restaurants.
  */
-updateRestaurants = () => {
+let updateRestaurants = () => {
   const cSelect = document.getElementById('cuisines-select');
   const nSelect = document.getElementById('neighborhoods-select');
 
@@ -108,6 +108,8 @@ updateRestaurants = () => {
     }
   })
 }
+
+updateRestaurants();
 
 /**
  * Clear current restaurants, their HTML and remove their map markers.
@@ -132,7 +134,8 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
   });
-  addMarkersToMap();
+  // addMarkersToMap();
+  buildMapUrl();
 }
 
 /**
@@ -228,4 +231,20 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     });
     self.markers.push(marker);
   });
+}
+
+/**
+ * create google static map url
+ */
+
+let buildMapUrl = (restaurants = self.restaurants) => {
+  let url = DBHelper.MAP_BASE_URL;
+  restaurants.forEach(restaurant => {
+    const restaurantFirstLetter = restaurant.name.charAt(0).toUpperCase();
+    let marker = `&markers=color:red%7Clabel:${restaurantFirstLetter}%7C${restaurant.latlng.lat},${restaurant.latlng.lng}`;
+    url += marker;
+  });
+
+  const imgMap = document.getElementById('map');
+  imgMap.src = url;
 }

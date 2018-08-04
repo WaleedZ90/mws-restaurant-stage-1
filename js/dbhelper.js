@@ -11,6 +11,10 @@ class DBHelper {
     return `http://localhost:${port}`;
   }
 
+  static get MAP_BASE_URL() {
+    return 'https://maps.googleapis.com/maps/api/staticmap?center="40.722216,-73.987501"&zoom=12&size=640x400&maptype=roadmap&key=AIzaSyDTD3VLNZHxfKu88cnua2O2VFYHLoV7V1U&scale=2';
+  }
+
   /**
    * Image Alts
    */

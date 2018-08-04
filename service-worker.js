@@ -29,7 +29,7 @@ const FILES_TO_CACHE = [
     '/manifest.json'
 ];
 
-const staticCacheName = 'restaurant-static-v1';
+const staticCacheName = 'restaurant-static-v9';
 
 self.addEventListener('install', function (event) {
     event.waitUntil(

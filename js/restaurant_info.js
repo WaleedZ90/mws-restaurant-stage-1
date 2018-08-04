@@ -62,6 +62,22 @@ function submitReview(e) {
 }
 
 /**
+ * Get a parameter by name from page URL.
+ */
+let getParameterByName = (name, url) => {
+  if (!url)
+    url = window.location.href;
+  name = name.replace(/[\[\]]/g, '\\$&');
+  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
+    results = regex.exec(url);
+  if (!results)
+    return null;
+  if (!results[2])
+    return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+/**
  * Get current restaurant from page URL.
  */
 fetchRestaurantFromURL = (callback) => {
@@ -85,6 +101,15 @@ fetchRestaurantFromURL = (callback) => {
     });
   }
 }
+
+fetchRestaurantFromURL((error, restaurant) => {
+  if (error) { // Got an error!
+    console.error(error);
+  } else {
+    fillBreadcrumb();
+    buildMapUrl();
+  }
+});
 
 /**
  * Create restaurant HTML and add it to the webpage
@@ -187,6 +212,7 @@ createReviewHTML = (review) => {
   })
 
   deleteReviewButton.className = 'delete-review-button';
+  deleteReviewButton.setAttribute('aria-label', 'delete review button');
 
   li.appendChild(deleteReviewButton);
 
@@ -286,6 +312,7 @@ createReviewHTML = (review) => {
   });
 
   editReviewButton.className = 'edit-review-button';
+  editReviewButton.setAttribute('aria-label', 'edit review button');
 
   li.appendChild(editReviewButton);
 
@@ -303,17 +330,14 @@ fillBreadcrumb = (restaurant = self.restaurant) => {
 }
 
 /**
- * Get a parameter by name from page URL.
+ * create google static map url
  */
-getParameterByName = (name, url) => {
-  if (!url)
-    url = window.location.href;
-  name = name.replace(/[\[\]]/g, '\\$&');
-  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
-    results = regex.exec(url);
-  if (!results)
-    return null;
-  if (!results[2])
-    return '';
-  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+
+let buildMapUrl = (restaurant = self.restaurant) => {
+  const restaurantFirstLetter = restaurant.name.charAt(0).toUpperCase();
+  let marker = `&markers=color:red%7Clabel:${restaurantFirstLetter}%7C${restaurant.latlng.lat},${restaurant.latlng.lng}`;
+  let url = `https://maps.googleapis.com/maps/api/staticmap?center="${restaurant.latlng.lat},${restaurant.latlng.lng}"&zoom=16&size=640x400&maptype=roadmap&key=AIzaSyDTD3VLNZHxfKu88cnua2O2VFYHLoV7V1U&scale=2`;
+
+  const imgMap = document.getElementById('map');
+  imgMap.src = `${url}${marker}`;
 }

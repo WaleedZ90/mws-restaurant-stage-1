@@ -146,12 +146,14 @@ nav h1 a {
 
 .map-container {
   width: 100%;
+  max-width: 935px;
+  max-height: 589px;
+  margin: auto;
 }
 
 #map {
-  height: 400px;
+  height: 100%;
   width: 100%;
-  background-color: #ccc;
 }
 
 /* ====================== Restaurant Filtering ====================== */
@@ -277,16 +279,16 @@ nav h1 a {
 }
 
 .inside #map-container {
-  background: blue none repeat scroll 0 0;
-  height: 425.656px;
   position: relative;
   top: 140px;
   width: 100%;
+  max-width: 900px;
+  max-height: 563px;
+  margin: auto;
   margin-bottom: 150px;
 }
 
 .inside #map {
-  background-color: #ccc;
   height: 100%;
   width: 100%;
 }
