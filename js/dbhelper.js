@@ -488,10 +488,10 @@ class DBHelper {
   static imageUrlForRestaurant(restaurant) {
 
     if (restaurant.photograph == undefined) {
-      return (`/img/10.jpg`);
+      return (`/img/10.webp`);
     }
 
-    return (`/img/${restaurant.photograph}.jpg`);
+    return (`/img/${restaurant.photograph}.webp`);
   }
 
   /**
